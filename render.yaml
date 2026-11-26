@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: document-answering-system
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    # Persistent disks need a paid instance type. On the free plan remove the
+    # `disk:` block and set plan: free (the database is then wiped on every
+    # restart / redeploy / idle spin-down).
+    plan: starter
+    healthCheckPath: /_stcore/health
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false            # Render asks you for the value
+      - key: CHROMA_DIR
+        value: /var/data/chroma_db
+      - key: TABLES_DIR
+        value: /var/data/tables
+    disk:
+      name: chroma-data
+      mountPath: /var/data
+      sizeGB: 1
